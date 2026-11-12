@@ -48,3 +48,7 @@ python3 -m http.server 8000
 ```
 
 `ch` doit être l'`id` d'un chapitre défini dans `CHAPTERS` (la fiche de révision se trouve dans `summary`).
+
+## 📸 Captures d'écran
+
+Voir [`docs/screenshots/`](docs/screenshots/) : accueil, fiche de révision, question, feedback bonne/mauvaise réponse, résultats, progression, vue mobile.
