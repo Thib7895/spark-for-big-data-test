@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Big Data — Spark · Hadoop · Calcul distribué</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+<div id="app">
+
+  <!-- ===================== ÉCRAN ACCUEIL ===================== -->
+  <section id="screen-home" class="screen active">
+    <header class="hero">
+      <div class="hero-icon">⚡</div>
+      <h1>Quiz Big Data</h1>
+      <p class="subtitle">Spark · Hadoop · Calcul distribué · Parquet — 8 chapitres, <span id="total-q">?</span> questions</p>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression globale</span><span id="gp-text">0%</span></div>
+        <div class="gp-bar"><div id="gp-fill" class="gp-fill"></div></div>
+      </div>
+    </header>
+
+    <div class="modes">
+      <button class="mode-card mode-all" id="btn-all">
+        <span class="mode-icon">🎯</span>
+        <span class="mode-title">Tout réviser</span>
+        <span class="mode-desc" id="desc-all">Toutes les questions, mélangées</span>
+      </button>
+      <button class="mode-card mode-exam" id="btn-exam">
+        <span class="mode-icon">⏱️</span>
+        <span class="mode-title">Mode examen</span>
+        <span class="mode-desc">Toutes les questions, 30 s par question, score record</span>
+      </button>
+      <button class="mode-card mode-missed" id="btn-missed">
+        <span class="mode-icon">🔁</span>
+        <span class="mode-title">Questions ratées</span>
+        <span class="mode-desc" id="desc-missed">Rejoue ce que tu as manqué</span>
+      </button>
+    </div>
+
+    <h2 class="section-title">📚 Par chapitre</h2>
+    <div id="chapter-list" class="chapter-list"></div>
+
+    <footer class="home-footer">
+      <button class="link-btn" id="btn-reset">🗑️ Réinitialiser mes statistiques</button>
+    </footer>
+  </section>
+
+  <!-- ===================== ÉCRAN QUIZ ===================== -->
+  <section id="screen-quiz" class="screen">
+    <div class="quiz-top">
+      <button class="link-btn" id="btn-quit">← Accueil</button>
+      <div class="quiz-progress">
+        <div class="qp-bar"><div id="qp-fill"></div></div>
+        <span id="qp-text">1 / 10</span>
+      </div>
+      <div class="quiz-stats">
+        <span id="streak" title="Série en cours">🔥 <b id="streak-n">0</b></span>
+        <span id="score-chip">✅ <b id="score-n">0</b></span>
+      </div>
+    </div>
+    <div id="timer-wrap" class="timer-wrap hidden"><div id="timer-bar"></div><span id="timer-text">30</span></div>
+
+    <div class="question-card" id="question-card">
+      <div class="q-meta">
+        <span class="q-chip" id="q-chip">Chapitre</span>
+        <span class="q-type" id="q-type">QCM</span>
+        <span class="q-reask hidden" id="q-reask">🔁 question remise en fin de série</span>
+      </div>
+      <h2 class="q-text" id="q-text"></h2>
+      <div class="q-options" id="q-options"></div>
+      <div class="q-actions">
+        <button class="btn primary" id="btn-validate" disabled>Valider</button>
+        <button class="btn primary hidden" id="btn-next">Suivant →</button>
+      </div>
+      <div class="q-feedback hidden" id="q-feedback">
+        <div class="qf-head" id="qf-head"></div>
+        <p class="qf-explain" id="qf-explain"></p>
+      </div>
+      <div class="q-hint">Astuce : touches <kbd>1</kbd>–<kbd>9</kbd> pour choisir, <kbd>Entrée</kbd> pour valider / continuer</div>
+    </div>
+  </section>
+
+  <!-- ===================== ÉCRAN RÉSULTATS ===================== -->
+  <section id="screen-result" class="screen">
+    <div class="result-card">
+      <div class="result-emoji" id="result-emoji">🏆</div>
+      <h2 id="result-title">Terminé !</h2>
+      <div class="result-score"><span id="result-pct">0%</span><span class="rs-label">de réussite</span></div>
+      <div class="result-grid">
+        <div class="rg-item"><b id="r-answered">0</b><span>questions</span></div>
+        <div class="rg-item good"><b id="r-good">0</b><span>réussies</span></div>
+        <div class="rg-item bad"><b id="r-bad">0</b><span>ratées</span></div>
+        <div class="rg-item"><b id="r-streak">0</b><span>🔥 meilleure série</span></div>
+        <div class="rg-item"><b id="r-time">0s</b><span>durée</span></div>
+        <div class="rg-item"><b id="r-best">—</b><span>record perso</span></div>
+      </div>
+      <div id="result-chapters" class="result-chapters"></div>
+      <div id="result-missed" class="result-missed"></div>
+      <div class="result-actions">
+        <button class="btn primary hidden" id="btn-retry-missed">🔁 Rejouer les ratées</button>
+        <button class="btn" id="btn-again">↻ Recommencer</button>
+        <button class="btn" id="btn-home">🏠 Accueil</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FICHE DE RÉVISION ===================== -->
+  <div id="fiche-modal" class="modal hidden">
+    <div class="modal-box">
+      <button class="modal-close" id="fiche-close">✕</button>
+      <h2 id="fiche-title"></h2>
+      <ul id="fiche-list" class="fiche-list"></ul>
+    </div>
+  </div>
+
+  <div id="confetti-layer"></div>
+</div>
+<script src="questions.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
